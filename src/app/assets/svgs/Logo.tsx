@@ -1,18 +1,34 @@
-export default function Logo() {
+import React from "react";
+
+export default function Logo(){
   return (
     <svg
-      id="logo-72"
-      width="35"
-      height="24"
-      viewBox="0 0 60 40"
-      fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 200 60"
+      fill="none"
+      className="w-40 h-auto"
     >
-      <path
-        d="M23.2997 0L52.0461 28.6301V44H38.6311V34.1553L17.7522 13.3607L13.415 13.3607L13.415 44H0L0 0L23.2997 0ZM38.6311 15.2694V0L52.0461 0V15.2694L38.6311 15.2694Z"
-        className="ccustom"
-        fill="#212326"
-      ></path>
+      {/* Shopping Cart 'E' */}
+      <g>
+        <rect x="10" y="10" width="35" height="10" rx="5" fill="#0084ff" />
+        <rect x="10" y="25" width="30" height="10" rx="5" fill="#0084ff" />
+        <circle cx="15" cy="50" r="5" fill="#0084ff" />
+        <circle cx="35" cy="50" r="5" fill="#0084ff" />
+        <rect x="10" y="40" width="30" height="4" fill="#0084ff" />
+      </g>
+      
+      {/* 'Mart' Text */}
+      <text
+        x="50"
+        y="45"
+        fontFamily="Arial, sans-serif"
+        fontSize="32"
+        fontWeight="semibold"
+        fill="black"
+      >
+        Mart
+      </text>
     </svg>
   );
-}
+};
+
