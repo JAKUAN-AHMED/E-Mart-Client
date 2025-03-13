@@ -75,6 +75,26 @@ const RegisterForm = () => {
             </FormItem>
           )}
         />
+        {/* password confirm */}
+          <FormField
+            control={form.control}
+            name="passwordConfirm"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl>
+                  <Input type="password" {...field} value={field.value || ""} />
+                </FormControl>
+
+                {/* {passwordConfirm && password !== passwordConfirm ? (
+                  <FormMessage> Password does not match </FormMessage>
+                ) : (
+                  
+                )} */}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         <Button type="submit"   className="mt-5 w-full">Register</Button>
         </form>
       </Form>
