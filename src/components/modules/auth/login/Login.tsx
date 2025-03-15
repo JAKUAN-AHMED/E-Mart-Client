@@ -14,22 +14,35 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { registrationSchema } from "./registerValidation";
-import { registerUser } from "@/services/AuthService";
+import { loginUser, reCaptchaTokenVerification } from "@/services/AuthService";
 import { toast } from "sonner";
+import { loginValidationSchema } from "./loginValidation";
+import ReCAPTCHA from "react-google-recaptcha";
+import { useState } from "react";
 
-const RegisterForm = () => {
+
+const LoginForm = () => {
   const form = useForm({
-    resolver: zodResolver(registrationSchema),
+    resolver: zodResolver(loginValidationSchema),
   });
 
   const {formState:{isSubmitting}}=form;
-  const password = form.watch("password");
-  const passwordConfirm = form.watch("passwordConfirm");
+  const [reCaptchaStatus, setReCaptchaStatus] = useState(false);
+
+  const handleReCaptcha = async (value: string | null) => {
+    try {
+      const res = await reCaptchaTokenVerification(value!);
+      if (res?.success) {
+        setReCaptchaStatus(true);
+      }
+    } catch (err: any) {
+      console.error(err);
+    }
+  };
 
   const onSubmit: SubmitHandler<FieldValues> = async(data) => {
     try{
-      const res=await registerUser(data);
+      const res=await loginUser(data);
       console.log(res)
       if(res.success)
       {
@@ -45,7 +58,7 @@ const RegisterForm = () => {
       <div className="flex items-center  space-x-4">
         <Logo></Logo>
         <div>
-          <h1 className="text-xl font-semibold">Register</h1>
+          <h1 className="text-xl font-semibold">Login</h1>
           <p className="font-extralight text-sm text-gray-600">
             Join us today and start your Journey
           </p>
@@ -53,21 +66,6 @@ const RegisterForm = () => {
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          {/* name */}
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input type="text" {...field} value={field.value || ""} />
-                </FormControl>
-                <FormDescription />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           {/* email */}
           <FormField
             control={form.control}
@@ -98,39 +96,29 @@ const RegisterForm = () => {
               </FormItem>
             )}
           />
-          {/* password confirm */}
-          <FormField
-            control={form.control}
-            name="passwordConfirm"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Confirm Password</FormLabel>
-                <FormControl>
-                  <Input type="password" {...field} value={field.value || ""} />
-                </FormControl>
-                {passwordConfirm && (password != passwordConfirm) ? (
-                  <FormMessage>Password does not match</FormMessage>
-                ) : (
-                  <FormMessage />
-                )}
-              </FormItem>
-            )}
+
+          <div className="flex justify-center items-center">
+          <ReCAPTCHA
+          sitekey={process.env.NEXT_PUBLIC_ReCAPTCHA_CLIENT_KEY!}
+          onChange={handleReCaptcha}
           />
+          </div>
+
           <Button  type="submit" className="mt-5 w-full">
            {
-            isSubmitting? "Registering ":"Register"
+            isSubmitting? "Loging... ":"Login"
            }
           </Button>
         </form>
       </Form>
       <p className="text-sm text-gray-600 text-center my-3">
-        Already have an account ?
-        <Link href="/login" className="text-primary">
-          Login
+        Do not have an account ?
+        <Link href="/register" className="text-primary">
+          Register
         </Link>
       </p>
     </div>
   );
 };
 
-export default RegisterForm;
+export default LoginForm;
